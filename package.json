@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8767",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8767",
     "lint": "next lint"
   },
   "dependencies": {
@@ -13,9 +13,14 @@
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
+    "dotenv": "^16.0.3",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "log4js": "^6.9.1",
+    "mongodb": "^5.5.0",
     "next": "13.4.3",
+    "nextjs-cors": "^2.1.2",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
