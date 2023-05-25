@@ -1,0 +1,367 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API для золотых лесов",
+    "description": "api для сайтика",
+    "termsOfService": "http://gf.spamigor.site",
+    "contact": {
+      "email": "pyshnenko94@yandex.ru"
+    },
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://gf.spamigor.site/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "users",
+      "description": "Запрос списка пользователей",
+      "externalDocs": {
+        "description": "Развернуть",
+        "url": "http://gf.spamigor.site/api/users"
+      }
+    },
+    {
+      "name": "login",
+      "description": "Авторизация",
+      "externalDocs": {
+        "description": "Развернуть",
+        "url": "http://spamigor.site/api/login"
+      }
+    },
+    {
+      "name": "register",
+      "description": "Регистрация",
+      "externalDocs": {
+        "description": "Развернуть",
+        "url": "http://spamigor.site/api/register"
+      }
+    },
+    {
+      "name": "join",
+      "description": "Подача заявки",
+      "externalDocs": {
+        "description": "Развернуть",
+        "url": "http://spamigor.site/api/join"
+      }
+    },
+    {
+      "name": "check",
+      "description": "Проверка e-mail или логин на доступность",
+      "externalDocs": {
+        "description": "Развернуть",
+        "url": "http://spamigor.site/api/check"
+      }
+    },
+    {
+      "name": "update",
+      "description": "Изменение данных пользователя",
+      "externalDocs": {
+        "description": "Развернуть",
+        "url": "http://spamigor.site/api/update"
+      }
+    }
+  ],
+  "paths": {
+    "/check": {
+      "post": {
+        "tags": [
+          "check"
+        ],
+        "summary": "Проверка нового логина на доступность",
+        "operationId": "checkLogin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "example": "pyshnenko94@yandex.ru"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Свободно"
+          },
+          "401": {
+            "description": "Некорректно"
+          },
+          "402": {
+            "description": "Занято"
+          }
+        }
+      }
+    },
+    "/update": {
+      "post": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Изменение данных пользователя",
+        "operationId": "usersUpd",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/upd"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено!"
+          },
+          "401": {
+            "description": "Нет прав"
+          },
+          "402": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Токен некорректен"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Запрос списка пользователей",
+        "operationId": "usersList",
+        "responses": {
+          "200": {
+            "description": "Выполнено!"
+          },
+          "401": {
+            "description": "Нет прав"
+          },
+          "402": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Токен некорректен"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "login"
+        ],
+        "summary": "Авторизация",
+        "operationId": "auth",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено!"
+          },
+          "401": {
+            "description": "Неверные данные"
+          }
+        }
+      }
+    },
+    "/register": {
+      "get": {
+        "tags": [
+          "register"
+        ],
+        "summary": "Валидация пользовательской почты",
+        "description": "Пользователь получает сообщение по e-mail, переходит по ссылке и если все верно, E-mail подтверждается",
+        "operationId": "userValid",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Зашифрованное имя пользователя",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "default": "U2FsdGVkX18dI4%2BwM%2Fijqu%2Fc0413idvmmTlr2dn%2Bgg0%3D"
+            }
+          },
+          {
+            "name": "addr",
+            "in": "query",
+            "description": "Зашифрованный адрес",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "default": "U2FsdGVkX19%2FAsXFWL6vkUe9QTnUqTISDp9Njmxkv8xLN%2FPDKRQkvI2IRE5ExmlD"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ValidUser"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "register"
+        ],
+        "summary": "Регистрация нового пользователя",
+        "description": "",
+        "operationId": "registration",
+        "parameters": [
+          {
+            "name": "make",
+            "in": "header",
+            "description": "Указатель для демо-режима",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "example"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/register"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено!"
+          },
+          "401": {
+            "description": "Логин или e-mail занят, попробуй изменить"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "upd": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string",
+            "example": "pyshnenko94@yandex2.ru"
+          },
+          "role": {
+            "type": "string",
+            "example": "Lord"
+          }
+        }
+      },
+      "register": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "example": "test_name"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "tast_lname"
+          },
+          "password": {
+            "type": "string",
+            "example": "test"
+          },
+          "login": {
+            "type": "string",
+            "example": "pyshnenko94@yandex.ru"
+          }
+        }
+      },
+      "login": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "test"
+          },
+          "login": {
+            "type": "string",
+            "example": "pyshnenko94@yandex.ru"
+          }
+        }
+      },
+      "ValidUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "U2FsdGVkX18dI4%2BwM%2Fijqu%2Fc0413idvmmTlr2dn%2Bgg0%3D"
+          },
+          "addr": {
+            "type": "string",
+            "example": "U2FsdGVkX19%2FAsXFWL6vkUe9QTnUqTISDp9Njmxkv8xLN%2FPDKRQkvI2IRE5ExmlD"
+          }
+        }
+      },
+      "TestAuthKey": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdF9uYW1lIjoidGVzdF9uYW1lIiwibGFzdF9uYW1lIjoidGFzdF9sbmFtZSIsInBhc3N3b3JkIjoiJDJiJDEwJDFLblN3bmFFUm9jNG5YenN5dVBjcGVSTldzSEJxc1dpZUlHQ2h3Si5uVDlhMEJyRElmN1pHIiwibG9naW4iOiJweXNobmVua285NEB5YW5kZXgucnUiLCJpZCI6NCwicm9sZSI6IlNlY3JldGFyeSIsImlhdCI6MTY4NTAwNDYwOH0.69BpBGVJlRYT3At6Ym9NxVU2OAFaNqAFaudwlXVvxqY"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "B_auth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

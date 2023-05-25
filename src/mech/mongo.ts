@@ -3,9 +3,9 @@ const MongoClient = require("mongodb").MongoClient;
 
 const { User, JoinReqData } = require('../types/users')
 
-let mongoClient;
-let db;
-let collection;
+let mongoClient: any;
+let db: any;
+let collection: any;
 const url = process.env.MONGO_URL;
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASS;
@@ -39,7 +39,7 @@ class mongoFunc {
         }
     }
 
-    async incertOne(obj: User | JoinReqData) {
+    async incertOne(obj: any) {
         try {
             await mongoClient.connect();
             await collection.insertOne(obj);
@@ -61,6 +61,21 @@ class mongoFunc {
         catch(e) {
             console.log(e);
             await mongoClient.close();
+        }
+    }
+
+    async updateOne(oldObj:any , obj: any) {
+        let userLogin;
+        try {
+            await mongoClient.connect();
+            userLogin = await collection.updateOne(
+                oldObj, 
+                {$set: obj});
+        }catch(err) {
+            console.log(err)
+        } finally {
+            await mongoClient.close();
+            return userLogin
         }
     }
 }
