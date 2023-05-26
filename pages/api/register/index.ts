@@ -44,12 +44,12 @@ export default async function handler(req: any, res: any) {
         logger.debug('Записей: ' + dat.length);
         if (dat.length) res.status(401).json({ status: 'bored' });
         else {
-            let atoken = await bcrypt.hash((req.body.pass+req.body.login.trim()), '$2b$10$1'+String(process.env.SALT_CRYPT))
+            let atoken = await bcrypt.hash((buf.password+buf.login.trim()), '$2b$10$1'+String(process.env.SALT_CRYPT))
             let id = await mongoS.id() + 1;
-            const saveData = {...buf, password: atoken, id, role: 'Peasant'};
+            const saveData = {...buf, id, gold: 0, role: id===1?'Lord':'Peasant'};
             let token = await jwt.sign(saveData, String(process.env.SALT_CRYPT));
-            if (!(req.headers?.make==='example')) mongoS.incertOne({...saveData, token});
-            res.status(200).json({ token, first_name: buf.first_name, last_name: buf.last_name, role: 'Peasant', id })
+            if (!(req.headers?.make==='example')) mongoS.incertOne({...saveData, token, password: atoken});
+            res.status(200).json({ token, first_name: buf.first_name, last_name: buf.last_name, role: id===1?'Lord':'Peasant', id })
             if (!(req.headers?.make==='example')) mails.info('Новый пользователь: ', buf.first_name);
         }
         console.log('\nend\n')
