@@ -1,5 +1,5 @@
 import NextCors from 'nextjs-cors';
-const mongo = require('./../../../src/mech/mongo');
+const mongo = require('./../../src/mech/mongo');
 const mongoS = new mongo();
 let jwt = require('jsonwebtoken');
 
@@ -7,7 +7,7 @@ const log4js = require("log4js");
 
 log4js.configure({
     appenders: { 
-        cApi: { type: "file", filename: "log/gfLoginlog.log" }, 
+        cApi: { type: "file", filename: "log/gfJoin.log" }, 
         console: { type: 'console' },
     },
     categories: { default: { appenders: ['console', "cApi"], level: "all" },
@@ -30,19 +30,16 @@ export default async function handler(req: any, res: any) {
                 logger.debug(verToken.login + '\n' + time)
                 let dat = await mongoS.find({login: verToken.login});
                 if (dat.length) {
-                    if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')) {
-                        let buf: any;
-                        if (typeof(req.body)==='string') {
-                            buf = JSON.parse(req.body)
-                        }
-                        else buf = req.body;
-                        if (buf.hasOwnProperty('gold')&&(typeof(buf.gold)==='string')) buf.gold = Number(buf.gold);
-                        let result = await mongoS.updateOne({login: buf.login}, buf);
-                        res.status(200).json({res: 'ok'});
+                    logger.debug(dat[0].login);
+                    let buf: any;
+                    if (typeof(req.body)==='string') {
+                        buf = JSON.parse(req.body)
                     }
-                    else {
-                        res.status(401).json({res: 'not debt'});
-                    }
+                    else buf = req.body;
+                    if (buf.hasOwnProperty('gold')&&(typeof(buf.gold)==='string')) buf.gold = Number(buf.gold);
+                    console.log(buf)
+                    let result = await mongoS.updateOne({login: dat[0].login}, {...buf, role: 'Citizen'});
+                    res.status(200).json({res: 'ok'});
                 }
                 else res.status(403).json({res: 'incorrectToken or body'});
             }

@@ -6,6 +6,7 @@ const { User, JoinReqData } = require('../types/users')
 let mongoClient: any;
 let db: any;
 let collection: any;
+let joinCollection: any;
 const url = process.env.MONGO_URL;
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASS;
@@ -19,6 +20,7 @@ class mongoFunc {
         mongoClient = new MongoClient(uri);
         db = mongoClient.db("gf");
         collection = db.collection("gfUsers");
+        joinCollection = db.collection("gfJoinUsers");
     }
 
     async find(obj: any) {
@@ -39,10 +41,10 @@ class mongoFunc {
         }
     }
 
-    async incertOne(obj: any) {
+    async incertOne(obj: any, join?: boolean) {
         try {
             await mongoClient.connect();
-            await collection.insertOne(obj);
+            join===true ? await joinCollection.insertOne(obj) : await collection.insertOne(obj);
         }catch(err) {
             console.log(err)
         } finally {
@@ -50,10 +52,10 @@ class mongoFunc {
         }
     }
 
-    async id() {
+    async id(join?: boolean) {
         try {
             await mongoClient.connect();
-            const count = await collection.countDocuments();
+            const count = join===true ? await joinCollection.countDocuments() : await collection.countDocuments();
             await mongoClient.close();
             console.log('Записей: ' + count)
             return count
@@ -64,13 +66,28 @@ class mongoFunc {
         }
     }
 
-    async updateOne(oldObj:any , obj: any) {
+    async updateOne(oldObj:any , obj: any, join?: boolean) {
         let userLogin;
         try {
             await mongoClient.connect();
-            userLogin = await collection.updateOne(
-                oldObj, 
-                {$set: obj});
+            userLogin = join===true ? 
+                await joinCollection.updateOne(oldObj, {$set: obj}) : 
+                await collection.updateOne(oldObj, {$set: obj});
+        }catch(err) {
+            console.log(err)
+        } finally {
+            await mongoClient.close();
+            return userLogin
+        }
+    }
+
+    async deleteOne(obj: any, join?: boolean) {
+        let userLogin;
+        try {
+            await mongoClient.connect();
+            userLogin = join===true ? 
+                await joinCollection.deleteOne(obj) : 
+                await collection.deleteOne(obj);
         }catch(err) {
             console.log(err)
         } finally {

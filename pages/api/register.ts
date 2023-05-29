@@ -1,4 +1,4 @@
-const mongo = require('./../../../src/mech/mongo');
+const mongo = require('./../../src/mech/mongo');
 const fs = require('fs');
 let jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -46,10 +46,10 @@ export default async function handler(req: any, res: any) {
         else {
             let atoken = await bcrypt.hash((buf.password+buf.login.trim()), '$2b$10$1'+String(process.env.SALT_CRYPT))
             let id = await mongoS.id() + 1;
-            const saveData = {...buf, id, gold: 0, role: id===1?'Lord':'Peasant'};
+            const saveData = {...buf, id, gold: 0, role: id===1?'Lord':'Stranger'};
             let token = await jwt.sign(saveData, String(process.env.SALT_CRYPT));
             if (!(req.headers?.make==='example')) mongoS.incertOne({...saveData, token, password: atoken});
-            res.status(200).json({ token, first_name: buf.first_name, last_name: buf.last_name, role: id===1?'Lord':'Peasant', id })
+            res.status(200).json({ token, first_name: buf.first_name, last_name: buf.last_name, role: id===1?'Lord':'Stranger', id })
             if (!(req.headers?.make==='example')) mails.info('Новый пользователь: ', buf.first_name);
         }
         console.log('\nend\n')
