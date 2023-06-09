@@ -16,59 +16,227 @@
   ],
   "tags": [
     {
-      "name": "users",
-      "description": "Запрос списка пользователей",
+      "name": "Операции с пользователями",
+      "description": "все что можно сделать с пользователем",
       "externalDocs": {
         "description": "Развернуть",
-        "url": "http://gf.spamigor.site/api/users"
+        "url": "http://gf.spamigor.site/api/"
       }
     },
     {
-      "name": "login",
-      "description": "Авторизация",
+      "name": "поступление золота",
+      "description": "Обрработка запросов по казне",
       "externalDocs": {
         "description": "Развернуть",
-        "url": "http://spamigor.site/api/login"
-      }
-    },
-    {
-      "name": "register",
-      "description": "Регистрация",
-      "externalDocs": {
-        "description": "Развернуть",
-        "url": "http://spamigor.site/api/register"
-      }
-    },
-    {
-      "name": "join",
-      "description": "Подача заявки",
-      "externalDocs": {
-        "description": "Развернуть",
-        "url": "http://spamigor.site/api/join"
-      }
-    },
-    {
-      "name": "check",
-      "description": "Проверка e-mail или логин на доступность",
-      "externalDocs": {
-        "description": "Развернуть",
-        "url": "http://spamigor.site/api/check"
-      }
-    },
-    {
-      "name": "update",
-      "description": "Изменение данных пользователя",
-      "externalDocs": {
-        "description": "Развернуть",
-        "url": "http://spamigor.site/api/update"
+        "url": "http://spamigor.site/api/gold/newValue"
       }
     }
   ],
   "paths": {
+    "/gold/updStatus": {
+      "post": {
+        "tags": [
+          "поступление золота"
+        ],
+        "summary": "Обновление Статуса и скидок пользователя",
+        "operationId": "updStatus",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "example": "pyshnenko94@yandex.ru"
+                  },
+                  "status": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "sale": {
+                    "type": "number",
+                    "example": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено"
+          },
+          "401": {
+            "description": "Недостаточно прав"
+          },
+          "402": {
+            "description": "Не авторизован"
+          },
+          "403": {
+            "description": "Некорректный токен или данные"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
+      }
+    },
+    "/gold/updatePersonal": {
+      "post": {
+        "tags": [
+          "поступление золота"
+        ],
+        "summary": "Обновление частных данных",
+        "operationId": "updatePersonal",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "example": "pyshnenko94@yandex.ru"
+                  },
+                  "value": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "date": {
+                    "type": "number",
+                    "example": 1686294178574
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено"
+          },
+          "401": {
+            "description": "Недостаточно прав"
+          },
+          "402": {
+            "description": "Не авторизован"
+          },
+          "403": {
+            "description": "Некорректный токен или данные"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
+      }
+    },
+    "/gold/newValue": {
+      "post": {
+        "tags": [
+          "поступление золота"
+        ],
+        "summary": "Обрработка запросов по получению золота",
+        "operationId": "newGoldValue",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "example": "pyshnenko94@yandex.ru"
+                  },
+                  "value": {
+                    "type": "number",
+                    "example": 100
+                  },
+                  "date": {
+                    "type": "number",
+                    "example": 1686294178574
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено"
+          },
+          "401": {
+            "description": "Недостаточно прав"
+          },
+          "402": {
+            "description": "Не авторизован"
+          },
+          "403": {
+            "description": "Некорректный токен или данные"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
+      }
+    },
+    "/gold/total": {
+      "post": {
+        "tags": [
+          "поступление золота"
+        ],
+        "summary": "Запрос сведений по движению средств. Оставить поле пустым для запроса общего балланса",
+        "operationId": "total",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "example": "pyshnenko94@yandex.ru"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено"
+          },
+          "401": {
+            "description": "Недостаточно прав"
+          },
+          "402": {
+            "description": "Не авторизован"
+          },
+          "403": {
+            "description": "Некорректный токен или данные"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
+      }
+    },
     "/check": {
       "post": {
         "tags": [
-          "check"
+          "Операции с пользователями"
         ],
         "summary": "Проверка нового логина на доступность",
         "operationId": "checkLogin",
@@ -104,7 +272,7 @@
     "/update": {
       "post": {
         "tags": [
-          "update"
+          "Операции с пользователями"
         ],
         "summary": "Изменение данных пользователя",
         "operationId": "usersUpd",
@@ -139,10 +307,48 @@
         ]
       }
     },
+    "/join": {
+      "post": {
+        "tags": [
+          "Операции с пользователями"
+        ],
+        "summary": "Подать заявку на вступление",
+        "operationId": "join",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/join"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено!"
+          },
+          "401": {
+            "description": "Нет прав"
+          },
+          "402": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Токен некорректен"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
+      }
+    },
     "/users": {
       "post": {
         "tags": [
-          "users"
+          "Операции с пользователями"
         ],
         "summary": "Запрос списка пользователей",
         "operationId": "usersList",
@@ -170,7 +376,7 @@
     "/login": {
       "post": {
         "tags": [
-          "login"
+          "Операции с пользователями"
         ],
         "summary": "Авторизация",
         "operationId": "auth",
@@ -194,10 +400,35 @@
         }
       }
     },
+    "/updateAuth": {
+      "post": {
+        "tags": [
+          "Операции с пользователями"
+        ],
+        "summary": "Обновить данные пользователя",
+        "operationId": "updateAuth",
+        "responses": {
+          "200": {
+            "description": "Выполнено!"
+          },
+          "401": {
+            "description": "Нет пользователя"
+          },
+          "402": {
+            "description": "Токен некорректен"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
+      }
+    },
     "/register": {
       "get": {
         "tags": [
-          "register"
+          "Операции с пользователями"
         ],
         "summary": "Валидация пользовательской почты",
         "description": "Пользователь получает сообщение по e-mail, переходит по ссылке и если все верно, E-mail подтверждается",
@@ -247,7 +478,7 @@
       },
       "post": {
         "tags": [
-          "register"
+          "Операции с пользователями"
         ],
         "summary": "Регистрация нового пользователя",
         "description": "",
@@ -282,6 +513,50 @@
             "description": "Логин или e-mail занят, попробуй изменить"
           }
         }
+      }
+    },
+    "/delete": {
+      "post": {
+        "tags": [
+          "Операции с пользователями"
+        ],
+        "summary": "Удалить пользователя",
+        "operationId": "delete",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "example": "pyshnenko94@yandex2.ru"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Выполнено!"
+          },
+          "401": {
+            "description": "Нет прав"
+          },
+          "402": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Токен некорректен"
+          }
+        },
+        "security": [
+          {
+            "B_auth": []
+          }
+        ]
       }
     }
   },
@@ -318,6 +593,55 @@
           "login": {
             "type": "string",
             "example": "pyshnenko94@yandex.ru"
+          }
+        }
+      },
+      "join": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "example": "megatron"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "test_name"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "tast_lname"
+          },
+          "surname": {
+            "type": "string",
+            "example": "торович"
+          },
+          "login": {
+            "type": "string",
+            "example": "pyshnenko94@yandex.ru"
+          },
+          "phone": {
+            "type": "number",
+            "example": 1488
+          },
+          "email": {
+            "type": "string",
+            "example": "igor25cm@ya.ru"
+          },
+          "birth_date": {
+            "type": "string",
+            "example": "2000-12-01T21:11:54.000Z"
+          },
+          "vk": {
+            "type": "string",
+            "example": "id1488"
+          },
+          "telegram": {
+            "type": "string",
+            "example": "igor25cm"
+          },
+          "about": {
+            "type": "string",
+            "example": "king of granny"
           }
         }
       },

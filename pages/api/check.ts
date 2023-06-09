@@ -15,8 +15,13 @@ export default async function handler(req: any, res: any) {
         optionsSuccessStatus: 200,
     });
     if (req.method==='POST'){
-        if (req?.body?.login!=='') {
-            let dat = await mongoS.find({login: req.body.login});
+        if (req.hasOwnProperty('body')) {            
+            let buf: any;
+            if (typeof(req.body)==='string') {
+                buf = JSON.parse(req.body)
+            }
+            else buf = req.body;
+            let dat = await mongoS.find(buf);
             if (dat.length===0) res.status(200).json({res: 'free'});
             else res.status(402).json({res: 'not free'})
         }

@@ -37,6 +37,7 @@ export default async function handler(req: any, res: any) {
                         }
                         else buf = req.body;
                         if (buf.hasOwnProperty('gold')&&(typeof(buf.gold)==='string')) buf.gold = Number(buf.gold);
+                        if (buf.hasOwnProperty('role')&&(buf.role==='Stranger')) buf.nickname='';
                         let result = await mongoS.updateOne({login: buf.login}, buf);
                         res.status(200).json({res: 'ok'});
                     }
