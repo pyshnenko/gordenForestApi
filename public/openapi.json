@@ -3,7 +3,7 @@
   "info": {
     "title": "API для золотых лесов",
     "description": "api для сайтика",
-    "termsOfService": "http://gf.spamigor.site",
+    "termsOfService": "http://gf.spamigor.ru",
     "contact": {
       "email": "pyshnenko94@yandex.ru"
     },
@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://gf.spamigor.site/api"
+      "url": "https://gf.spamigor.ru/api"
     }
   ],
   "tags": [
@@ -20,7 +20,7 @@
       "description": "все что можно сделать с пользователем",
       "externalDocs": {
         "description": "Развернуть",
-        "url": "http://gf.spamigor.site/api/"
+        "url": "http://gf.spamigor.ru/api/"
       }
     },
     {
@@ -28,7 +28,7 @@
       "description": "Обрработка запросов по казне",
       "externalDocs": {
         "description": "Развернуть",
-        "url": "http://spamigor.site/api/gold/newValue"
+        "url": "http://spamigor.ru/api/gold/newValue"
       }
     }
   ],
