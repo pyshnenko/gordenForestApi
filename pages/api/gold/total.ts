@@ -31,7 +31,9 @@ export default async function handler(req: any, res: any) {
                 let dat = await mongoS.find({login: verToken.login});
                 if (dat.length) {
                     if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')) {
-                        if (req.hasOwnProperty('body')){
+                        if (req.hasOwnProperty('body')&&(typeof(req.body)==='object')&&(Object.keys(req.body).length>=1)){
+			    console.log(typeof(req.body));
+                            console.log(req.body);
                             let buf: any;
                             if (typeof(req.body)==='string') {
                                 buf = JSON.parse(req.body)
