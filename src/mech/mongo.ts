@@ -56,12 +56,44 @@ class mongoFunc {
                 if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer')) {
                     if (usLogin) {
                         const result = await goldCollection.find({login: usLogin}).toArray()
-                        goldData = {res: 'ok', data: { total: result[0].total || 0, history: result[0].history || []}}
+                        goldData = {res: 'ok', data: { ...result[0]}}
                     }
                     else {
                         const result = await goldTotalCollection.find().toArray()
                         if (result.length) goldData = {res: 'ok', data: { total: result[0].total || 0, history: result[0].history || []}}
                         else goldData = {res: 'noData'}
+                    }
+                } 
+                else goldData = {res: 'not auth'}
+            }
+            else goldData = {res: 'not auth'};
+        }catch(err) {
+            goldData = {res: 'err'};
+            console.log(err)
+        } finally {
+            await mongoClient.close();
+            return goldData;
+        }
+    }
+
+    async goldTable(login: string, usLogin?: string) {
+        let goldData;
+        try {
+            let extBuf: any[];
+            await mongoClient.connect();
+            extBuf = await collection.find({login: login}).toArray();
+            console.log(extBuf)
+            if (extBuf.length) {
+                if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer')) {
+                    if (usLogin) {
+                        const result = await goldCollection.find({login: usLogin}).toArray();
+                        goldData = {res: 'ok', data: { ...result[0]}}
+                    }
+                    else {
+                        const result = await goldCollection.find().toArray();
+                        let resArr: {login: string, value: any}[] = [];
+                        await result.map((item: any)=>{resArr.push({login: item.login, value: item.total})});
+                        goldData = {res: 'ok', data: resArr}
                     }
                 } 
                 else goldData = {res: 'not auth'}
