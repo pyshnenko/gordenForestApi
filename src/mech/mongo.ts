@@ -53,7 +53,7 @@ class mongoFunc {
             extBuf = await collection.find({login: login}).toArray();
             console.log(extBuf)
             if (extBuf.length) {
-                if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer')) {
+                if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer') || (extBuf[0].login === usLogin)) {
                     if (usLogin) {
                         const result = await goldCollection.find({login: usLogin}).toArray()
                         goldData = {res: 'ok', data: { ...result[0]}}

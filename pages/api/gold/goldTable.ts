@@ -29,13 +29,29 @@ export default async function handler(req: any, res: any) {
                 let time = new Date(Number((new Date()).setHours((new Date()).getHours() - 3)) - verToken.iat*1000);
                 logger.debug(verToken.login + '\n' + time)
                 let dat = await mongoS.find({login: verToken.login});
-                if (dat.length) {
-                    if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')) {
-                        let result = await mongoS.goldTable(dat[0].login);
-                        res.status(200).json({res: result});
+                if (dat.length) {                    
+                    if (req.hasOwnProperty('body')&&(typeof(req.body)==='object')&&(Object.keys(req.body).length>=1)){
+                        let buf: any;
+                        if (typeof(req.body)==='string') {
+                            buf = JSON.parse(req.body)
+                        }
+                        else buf = req.body;                        
+                        if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')||(dat[0].login === buf.login)) {
+                            let result = await mongoS.goldTable(dat[0].login, buf.login);
+                            res.status(200).json({res: result});
+                        }
+                        else {
+                            res.status(401).json({res: 'not debt'});
+                        }
                     }
                     else {
-                        res.status(401).json({res: 'not debt'});
+                        if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')) {
+                            let result = await mongoS.goldTable(dat[0].login);
+                            res.status(200).json({res: result});
+                        }
+                        else {
+                            res.status(401).json({res: 'not debt'});
+                        }
                     }
                 }
                 else res.status(403).json({res: 'incorrectToken or body'});
