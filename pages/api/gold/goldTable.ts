@@ -47,7 +47,7 @@ export default async function handler(req: any, res: any) {
                         }
                     }
                     else {
-                        if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')) {
+                        if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')||(dat[0].role==='Treasurer')) {
                             let result = await mongoS.goldTable(dat[0].login);
                             res.status(200).json({res: result});
                         }
