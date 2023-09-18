@@ -59,7 +59,7 @@ class mongoFunc {
                         goldData = {res: 'ok', data: { ...result[0]}}
                     }
                     else {
-                        const result = await goldCollection.find({login: '&totlal'}).toArray()
+                        const result = await goldCollection.find({login: '123total'}).toArray()
                         if (result.length) goldData = {res: 'ok', data: { total: result[0].total || 0, history: result[0].history || []}}
                         else goldData = {res: 'noData'}
                     }
@@ -117,7 +117,7 @@ class mongoFunc {
                 if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer')) {
                     const result = await goldCollection.find({login: '123total'}).toArray();
                     console.log(result);
-                    if (result.length === 0) await goldCollection.insertOne({login: '123total', total: 0, history: [], sale: 0, status: 0})
+                    if (result.length === 0) await goldCollection.insertOne({login: '123total', total: obj.value, history: [obj], sale: 0, status: 0})
                     else {
                         result[0].history.push(obj);
                         let newVal = {total: result[0].total + obj.value, history: result[0].history}
