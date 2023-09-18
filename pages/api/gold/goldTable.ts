@@ -35,7 +35,9 @@ export default async function handler(req: any, res: any) {
                         if (typeof(req.body)==='string') {
                             buf = JSON.parse(req.body)
                         }
-                        else buf = req.body;                        
+                        else buf = req.body;
+                        console.log('check role');
+                        console.log(dat[0].role);                
                         if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')||(dat[0].role==='Treasurer')||(dat[0].login === buf.login)) {
                             let result = await mongoS.goldTable(dat[0].login, buf.login);
                             res.status(200).json({res: result});
