@@ -115,7 +115,7 @@ class mongoFunc {
             let extBuf: any[] = await collection.find({login: auth}).toArray();
             if (extBuf.length) {
                 if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer')) {
-                    const result = await goldCollection.find({id: '123total'}).toArray();
+                    const result = await goldCollection.find({login: '123total'}).toArray();
                     console.log(result);
                     if (result.length === 0) await goldCollection.insertOne({login: '123total', total: 0, history: [], sale: 0, status: 0})
                     else {
