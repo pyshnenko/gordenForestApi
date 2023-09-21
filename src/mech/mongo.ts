@@ -127,36 +127,36 @@ class mongoFunc {
             if (extBuf.length) {
                 if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer')) {
                     const result = treasury ?
-                        await goldTotalCollection.find({id: addr}).toArray():
+                        await goldTotalCollection.find({id: addr, login: '123total'}).toArray():
                         await goldCollection.find({login: '123total'}).toArray();
                     console.log(result);
                     if (result.length === 0) treasury ?
-                        await goldTotalCollection.insertOne({id: addr, total: obj.value, history: [obj]}):
+                        await goldTotalCollection.insertOne({id: addr, login: '123total', total: obj.value, history: [obj]}):
                         await goldCollection.insertOne({login: '123total', total: obj.value, history: [obj], sale: 0, status: 0})
                     else {
                         result[0].history.push(obj);
                         let newVal = {total: result[0].total + obj.value, history: result[0].history};
                         treasury ?
-                            await goldTotalCollection.updateOne({id: addr}, {$set: newVal}):
+                            await goldTotalCollection.updateOne({id: addr, login: '123total'}, {$set: newVal}):
                             await goldCollection.updateOne({login: '123total'}, {$set: newVal});
                     }
                     const personalRes = treasury ?
-                    await goldTotalCollection.find({login: obj.login}).toArray():
-                    await goldCollection.find({login: obj.login}).toArray();
+                        await goldTotalCollection.find({id: addr, login: obj.login}).toArray():
+                        await goldCollection.find({login: obj.login}).toArray();
                     console.log(personalRes);
                     if (personalRes.length === 0 ) {
                         if (treasury)
-                            await goldTotalCollection.insertOne({id: 'user', login: obj.login, total: obj.value, history: [{...obj, addr}], sale: 0, status: 0})
+                            await goldTotalCollection.insertOne({id: addr, login: obj.login, total: obj.value, history: [{...obj, addr}], sale: 0, status: 0})
                         else {
                             await goldCollection.insertOne({login: obj.login, total: obj.value, history: [obj], sale: 0, status: 0})
                             await collection.updateOne({login: obj.login}, {$set: {gold: obj.value}})
                         }
                     }
                     else {
-                        personalRes[0].history.push(treasury?{...obj, addr}:obj)
+                        personalRes[0].history.push(obj)
                         let newVal = {total: personalRes[0].total + obj.value, history: personalRes[0].history}
                         if (treasury)
-                            await goldTotalCollection.updateOne({id: 'user', login: obj.login}, {$set: newVal})
+                            await goldTotalCollection.updateOne({id: addr, login: obj.login}, {$set: newVal})
                         else {
                             await goldCollection.updateOne({login: obj.login}, {$set: newVal})
                             await collection.updateOne({login: obj.login}, {$set: {gold: newVal.total}});
