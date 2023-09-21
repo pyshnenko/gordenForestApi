@@ -45,7 +45,7 @@ class mongoFunc {
         }
     }
 
-    async goldTotal(login: string, usLogin?: string) {
+    async goldTotal(login: string, usLogin?: string, treasury?: boolean) {
         let goldData;
         try {
             let extBuf: any[];
@@ -55,11 +55,15 @@ class mongoFunc {
             if (extBuf.length) {
                 if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer') || (extBuf[0].login === usLogin)) {
                     if (usLogin) {
-                        const result = await goldCollection.find({login: usLogin}).toArray()
+                        const result = treasury?
+                            await goldTotalCollection.find({login: usLogin}).toArray():
+                            await goldCollection.find({login: usLogin}).toArray();
                         goldData = {res: 'ok', data: { ...result[0]}}
                     }
                     else {
-                        const result = await goldCollection.find({login: '123total'}).toArray()
+                        const result = treasury?
+                            await goldTotalCollection.find({login: '123total'}).toArray():
+                            await goldCollection.find({login: '123total'}).toArray();
                         if (result.length) goldData = {res: 'ok', data: { total: result[0].total || 0, history: result[0].history || []}}
                         else goldData = {res: 'noData'}
                     }
