@@ -37,7 +37,11 @@ export default async function handler(req: any, res: any) {
                             buf = JSON.parse(req.body)
                         }
                         else buf = req.body;
-                        let result = await mongoS.newGoldValue({login: String(buf.login), value: Number(buf.value), date: Number(buf.date), veryfi: dat[0].login}, dat[0].login, true);
+                        let result = await mongoS.newGoldValue({
+                            login: String(buf.login), 
+                            value: Number(buf.value), 
+                            date: Number(buf.date), 
+                            veryfi: dat[0].login}, dat[0].login, true, buf.addr|| 'total');
                         if (result) res.status(200).json({res: 'ok'});
                         else res.status(401).json({res: 'not debt or data'});
                     }

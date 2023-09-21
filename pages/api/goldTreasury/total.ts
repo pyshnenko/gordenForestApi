@@ -41,16 +41,16 @@ export default async function handler(req: any, res: any) {
                             }
                             else buf = req.body;
                             if ((buf.hasOwnProperty('login'))&&(typeof(buf.login)==='string')&&(buf.login!=='')){
-                                let result = await mongoS.goldTotal(dat[0].login, buf.login, true);
+                                let result = await mongoS.goldTotal(dat[0].login, buf.login, true, buf.addr || 'total');
                                 res.status(200).json({res: result});
                             }
                             else {
-                                let result = await mongoS.goldTotal(dat[0].login, undefined , true);
+                                let result = await mongoS.goldTotal(dat[0].login, undefined , true, buf.addr || 'total');
                                 res.status(200).json({res: result});
                             }
                         }
                         else {
-                            let result = await mongoS.goldTotal(dat[0].login, undefined , true);
+                            let result = await mongoS.goldTotal(dat[0].login, undefined , true, 'total');
                             res.status(200).json({res: result});
                         }
                     }
