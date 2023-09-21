@@ -134,8 +134,8 @@ class mongoFunc {
                         result[0].history.push(obj);
                         let newVal = {total: result[0].total + obj.value, history: result[0].history};
                         treasury ?
-                            await goldCollection.updateOne({login: '123total'}, {$set: newVal}):
-                            await goldTotalCollection.updateOne({login: '123total'}, {$set: newVal});
+                            await goldTotalCollection.updateOne({login: '123total'}, {$set: newVal}):
+                            await goldCollection.updateOne({login: '123total'}, {$set: newVal});
                     }
                     const personalRes = await goldCollection.find({login: obj.login}).toArray();
                     if (personalRes.length === 0 ) {
