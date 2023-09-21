@@ -47,6 +47,7 @@ class mongoFunc {
 
     async goldTotal(login: string, usLogin?: string, treasury?: boolean) {
         console.log(treasury);
+        console.log(usLogin);
         let goldData;
         try {
             let extBuf: any[];
@@ -59,6 +60,8 @@ class mongoFunc {
                         const result = treasury?
                             await goldTotalCollection.find({login: usLogin}).toArray():
                             await goldCollection.find({login: usLogin}).toArray();
+                        console.log('result:');
+                        console.log(result);
                         goldData = {res: 'ok', data: { ...result[0]}}
                     }
                     else {
