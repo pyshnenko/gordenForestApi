@@ -28,6 +28,7 @@ export default async function handler(req: any, res: any) {
                 let verToken = await jwt.verify(req.headers.authorization.substr(7), String(process.env.SALT_CRYPT));
                 let time = new Date(Number((new Date()).setHours((new Date()).getHours() - 3)) - verToken.iat*1000);
                 logger.debug(verToken.login + '\n' + time)
+                logger.debug('goldTreasury - newValue')
                 let dat = await mongoS.find({login: verToken.login});
                 if (dat.length) {
                     if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')||(dat[0].role==='Treasurer')) {

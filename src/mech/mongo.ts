@@ -46,6 +46,7 @@ class mongoFunc {
     }
 
     async goldTotal(login: string, usLogin?: string, treasury?: boolean) {
+        console.log(treasury);
         let goldData;
         try {
             let extBuf: any[];
@@ -115,6 +116,7 @@ class mongoFunc {
     }
 
     async newGoldValue(obj: {login: string, value: number, date: number, veryfi: string}, auth: string, treasury?: boolean) {
+        console.log(treasury);
         let res: boolean = false;
         try {
             await mongoClient.connect();
