@@ -66,7 +66,7 @@ class mongoFunc {
                     }
                     else {
                         const result = treasury?
-                            await goldTotalCollection.find({id: addr}).toArray():
+                            await goldTotalCollection.find({id: addr, login: '123total'}).toArray():
                             await goldCollection.find({login: '123total'}).toArray();
                         if (result.length) goldData = {res: 'ok', data: { total: result[0].total || 0, history: result[0].history || []}}
                         else goldData = {res: 'noData'}
