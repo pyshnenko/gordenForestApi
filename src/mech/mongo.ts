@@ -118,7 +118,7 @@ class mongoFunc {
         }
     }
 
-    async newGoldValue(obj: {login: string, value: number, date: number, veryfi: string}, auth: string, treasury?: boolean, addr?: string ) {
+    async newGoldValue(obj: {login: string, value: number, date: number, veryfi: string, way?: string}, auth: string, treasury?: boolean, addr?: string ) {
         console.log(treasury);
         let res: boolean = false;
         try {
