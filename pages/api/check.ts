@@ -21,9 +21,16 @@ export default async function handler(req: any, res: any) {
                 buf = JSON.parse(req.body)
             }
             else buf = req.body;
-            let dat = await mongoS.find(buf);
-            if (dat.length===0) res.status(200).json({res: 'free'});
-            else res.status(402).json({res: 'not free'})
+            let result: {login?: boolean, email?: boolean} = {};
+            if ((typeof(buf)==='object')&&(buf.hasOwnProperty('login'))){
+                let dat = await mongoS.find({login: buf.login});
+                result.login = dat.length===0;
+            }
+            if ((typeof(buf)==='object')&&(buf.hasOwnProperty('email'))){
+                let dat = await mongoS.find({email: buf.email});
+                result.email = dat.length===0;
+            }
+            res.status(200).json({...result});
         }
         else res.status(401).json({res: 'no checked data'});
     }
