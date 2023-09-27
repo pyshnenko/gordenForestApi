@@ -38,6 +38,10 @@ export default async function handler(req: any, res: any) {
                         else buf = req.body;
                         if (buf.hasOwnProperty('gold')&&(typeof(buf.gold)==='string')) buf.gold = Number(buf.gold);
                         if (buf.hasOwnProperty('role')&&(buf.role==='Stranger')) buf.nickname='';
+                        if (buf.hasOwnProperty('email') {
+let rEmail: {email: string}[] = await mongoS.find({login: buf.login})
+if (buf.email!==rEmail[0]) buf.emailVerify = false
+                    }
                         let result = await mongoS.updateOne({login: buf.login}, buf);
                         res.status(200).json({res: 'ok'});
                     }
