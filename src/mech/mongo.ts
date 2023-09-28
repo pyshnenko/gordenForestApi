@@ -188,6 +188,7 @@ class mongoFunc {
             await mongoClient.connect();
             let extBuf: any[] = await collection.find({login: auth}).toArray();
             if (extBuf.length) {
+                console.log(obj.from)
                 if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer') || (!treasury&&(obj.login===auth)&&(addr!==0))) {
                     if (treasury) {
                         const result = await goldTotalCollection.find({id: addr, login: '123total'}).toArray();
@@ -219,6 +220,7 @@ class mongoFunc {
                             res = true;
                         }
                     }
+                    console.log(res);
                 }
             }
         }catch(err) {
