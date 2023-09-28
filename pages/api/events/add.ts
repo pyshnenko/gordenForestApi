@@ -40,7 +40,7 @@ export default async function handler(req: any, res: any) {
                         console.log('check role');
                         console.log(dat[0].role);                
                         if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')) {
-                            let result = await mongoS.eventsAdd(buf.login, Event(buf));
+                            let result = buf.example ? true: await mongoS.eventsAdd(buf.login, buf);
                             res.status(200).json({res: result});
                         }
                         else {
