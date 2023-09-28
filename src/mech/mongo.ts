@@ -9,11 +9,23 @@ let collection: any;
 let joinCollection: any;
 let goldCollection: any;
 let goldTotalCollection: any;
+let eventsCollection: any;
 const url = process.env.MONGO_URL;
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASS;
 const authMechanism = "DEFAULT";
 const uri =`mongodb://${username}:${password}@${url}/?authMechanism=${authMechanism}`;
+
+export interface Event {
+    pict: string[],
+    text: string,
+    id?: number, 
+    name: string,
+    gold: number,
+    activeMembers: string[],
+    orginizer: string[],
+    nowGold?: number
+}
 
 console.log('hello')
 
@@ -25,6 +37,7 @@ class mongoFunc {
         joinCollection = db.collection("gfJoinUsers");
         goldCollection = db.collection("gfGold");
         goldTotalCollection = db.collection("gfGoldTotal");
+        eventsCollection = db.collection("gfEvents");
     }
 
     async find(obj: any) {
@@ -45,23 +58,75 @@ class mongoFunc {
         }
     }
 
-    async goldTotal(login: string, usLogin?: string, treasury?: boolean, addr?: string) {
-        console.log(treasury);
-        console.log(usLogin);
+    async eventsAdd(login: string, event: Event) {
+        let id: number = 0;
+        try {
+            await mongoClient.connect();
+            let author: any[] = await collection.find({login}).toArray();
+            if (author.length && (author[0].role === 'Lord' || author[0].role === 'Secretary')) {
+                let all: any[] = await eventsCollection.find().toArray();
+                id = all.length === 0 ? 1 : all[all.length-1].id + 1;
+                await eventsCollection.incertOne({...event, id, nowGold: 0})
+            }
+        }
+        catch (e) {
+            id = -1;
+        }
+        finally {
+            await mongoClient.close();
+            return id
+        }
+    }
+
+    async eventslist(login: string, id: number) {
+        let all: any[] = [];
+        try {
+            await mongoClient.connect();
+            let author: any[] = await collection.find({login}).toArray();
+            if (author.length) {
+                all = id ? await eventsCollection.find({id}).toArray() : await eventsCollection.find().toArray();
+            }
+        }
+        catch (e) {
+            all = [];
+        }
+        finally {
+            await mongoClient.close();
+            return all
+        }
+    }
+
+    async eventsUpd(login: string, event: Event) {
+        let res: boolean = false;
+        try {
+            await mongoClient.connect();
+            let author: any[] = await collection.find({login}).toArray();
+            if (author.length && (author[0].role === 'Lord' || author[0].role === 'Secretary')) {
+                await eventsCollection.updateOne({id: event.id}, {$set: event});
+                res = true;
+            }
+        }
+        catch (e) {
+            res = false;
+        }
+        finally {
+            await mongoClient.close();
+            return res
+        }
+    }
+
+    async goldTotal(login: string, usLogin?: string, treasury?: boolean, addr?: number) {
         let goldData;
         try {
             let extBuf: any[];
             await mongoClient.connect();
             extBuf = await collection.find({login: login}).toArray();
-            console.log(extBuf)
             if (extBuf.length) {
                 if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer') || (extBuf[0].login === usLogin)) {
                     if (usLogin) {
                         const result = treasury?
                             await goldTotalCollection.find({id: addr, login: usLogin}).toArray():
                             await goldCollection.find({login: usLogin}).toArray();
-                        console.log('result:');
-                        console.log(result);
                         goldData = {res: 'ok', data: { ...result[0]}}
                     }
                     else {
@@ -77,7 +142,6 @@ class mongoFunc {
             else goldData = {res: 'not auth'};
         }catch(err) {
             goldData = {res: 'err'};
-            console.log(err)
         } finally {
             await mongoClient.close();
             return goldData;
@@ -90,7 +154,6 @@ class mongoFunc {
             let extBuf: any[];
             await mongoClient.connect();
             extBuf = await collection.find({login: login}).toArray();
-            console.log(extBuf)
             if (extBuf.length) {
                 if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer')) {
                     if (usLogin) {
@@ -118,52 +181,45 @@ class mongoFunc {
         }
     }
 
-    async newGoldValue(obj: {login: string, value: number, date: number, veryfi: string, way?: string}, auth: string, treasury?: boolean, addr?: string ) {
+    async newGoldValue(obj: {login: string, value: number, date: number, veryfi: string, way?: string, from?: number}, auth: string, treasury?: boolean, addr?: number ) {
         console.log(treasury);
         let res: boolean = false;
         try {
             await mongoClient.connect();
             let extBuf: any[] = await collection.find({login: auth}).toArray();
             if (extBuf.length) {
-                if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer')) {
-                    const result = treasury ?
-                        await goldTotalCollection.find({id: addr, login: '123total'}).toArray():
-                        await goldCollection.find({login: '123total'}).toArray();
-                    console.log(result);
-                    if (result.length === 0) treasury ?
-                        await goldTotalCollection.insertOne({id: addr, login: '123total', total: obj.value, history: [obj]}):
-                        await goldCollection.insertOne({login: '123total', total: obj.value, history: [obj], sale: 0, status: 0})
-                    else {
-                        result[0].history.push(obj);
-                        let newVal = {total: result[0].total + obj.value, history: result[0].history};
-                        treasury ?
-                            await goldTotalCollection.updateOne({id: addr, login: '123total'}, {$set: newVal}):
-                            await goldCollection.updateOne({login: '123total'}, {$set: newVal});
-                    }
-                    const personalRes = treasury ?
-                        await goldTotalCollection.find({id: addr, login: obj.login}).toArray():
-                        await goldCollection.find({login: obj.login}).toArray();
-                    console.log(personalRes);
-                    if (personalRes.length === 0 ) {
-                        if (treasury)
-                            await goldTotalCollection.insertOne({id: addr, login: obj.login, total: obj.value, history: [{...obj, addr}], sale: 0, status: 0})
+                if ((extBuf[0].role === 'Lord') || (extBuf[0].role === 'Treasurer') || (!treasury&&(obj.login===auth)&&(addr!==0))) {
+                    if (treasury) {
+                        const result = await goldTotalCollection.find({id: addr, login: '123total'}).toArray();
+                        console.log(result);
+                        if (result.length === 0) await goldTotalCollection.insertOne({id: addr, login: '123total', total: obj.value, history: [obj]});
                         else {
-                            await goldCollection.insertOne({login: obj.login, total: obj.value, history: [obj], sale: 0, status: 0})
-                            await collection.updateOne({login: obj.login}, {$set: {gold: obj.value}})
+                            result[0].history.push(obj);
+                            let newVal = {total: result[0].total + obj.value, history: result[0].history};
+                            await goldTotalCollection.updateOne({id: addr, login: '123total'}, {$set: newVal})
+                        }
+                        if ((obj.from === -1)||(obj.from == undefined)) {
+                            let buf: any[] = await collection.fing(obj.login).toArray();
+                            buf[0].gold = (buf[0].gold||0) - obj.value;
+                            await this.updateOne({login: buf[0].login}, {gold: buf[0].gold});
+                            res = true;
+                        }
+                        else {
+                            let totalVal = await goldTotalCollection.find({id: obj.from}).toArray();
+                            if (totalVal.length === 0) await goldTotalCollection.incertOne({id: obj.from, login: obj.login, total: obj.value, history: [{...obj, addr}], sale: 0, status: 0})
+                            else {
+                                totalVal[0].history.push({...obj, value: -obj.value});
+                                let newVal = {total: totalVal[0].total - obj.value, history: totalVal[0].history};
+                                await goldTotalCollection.updateOne({id: obj.from, login: '123total'}, {$set: newVal})
+                                if (obj.from !== 0) {
+                                    let event: any[] = await eventsCollection.find({id: obj.from}).toArray();
+                                    await eventsCollection.updateOne({id: obj.from}, {$set: {gold: event[0].gold - obj.value}})
+                                }
+                            }
+                            res = true;
                         }
                     }
-                    else {
-                        personalRes[0].history.push(obj)
-                        let newVal = {total: personalRes[0].total + obj.value, history: personalRes[0].history}
-                        if (treasury)
-                            await goldTotalCollection.updateOne({id: addr, login: obj.login}, {$set: newVal})
-                        else {
-                            await goldCollection.updateOne({login: obj.login}, {$set: newVal})
-                            await collection.updateOne({login: obj.login}, {$set: {gold: newVal.total}});
-                        }
-                    }
-                    res = true;
-                } 
+                }
             }
         }catch(err) {
             console.log(err)
@@ -173,7 +229,7 @@ class mongoFunc {
         }
     }
 
-    async updatePersonalValue(obj: {login: string, value: number, date: number}, auth: string, treasury?: boolean, addr?: string ) {
+    async updatePersonalValue(obj: {login: string, value: number, date: number}, auth: string, treasury?: boolean, addr?: number ) {
         let res: {done: boolean, total: number, comment?: string} = {done: false, total: 0};
         console.log(1)
         try {

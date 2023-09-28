@@ -37,7 +37,7 @@ export default async function handler(req: any, res: any) {
                             buf = JSON.parse(req.body)
                         }
                         else buf = req.body;
-                        let result = await mongoS.updatePersonalValue({login: String(buf.login), value: Number(buf.value), date: Number(buf.date)}, dat[0].login, true, buf.addr || 'total');
+                        let result = await mongoS.updatePersonalValue({login: String(buf.login), value: Number(buf.value), date: Number(buf.date)}, dat[0].login, true, buf.addr || 0);
                         if (result) res.status(200).json({res: 'ok'});
                         else res.status(401).json({res: 'not debt'});
                     }
