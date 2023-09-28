@@ -198,7 +198,7 @@ class mongoFunc {
                             let newVal = {total: result[0].total + obj.value, history: result[0].history};
                             await goldTotalCollection.updateOne({id: addr, login: '123total'}, {$set: newVal})
                         }
-                        if ((obj.from === -1)||(obj.from == undefined)) {
+                        if ((obj.from === -1)||(obj.from == undefined)||(obj.from == null)) {
                             let buf: any[] = await collection.fing(obj.login).toArray();
                             buf[0].gold = (buf[0].gold||0) - obj.value;
                             await this.updateOne({login: buf[0].login}, {gold: buf[0].gold});
