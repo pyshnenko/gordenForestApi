@@ -62,3 +62,5 @@ app.post("/apiUpload", function (req, res, next) {
         res.send({res: 'ok', addr: newName});
     }
 });
+
+app.listen(8768, ()=>console.log('start'));
