@@ -25,7 +25,8 @@ export interface Event {
     activeMembers: string[],
     orginizer: string[],
     nowGold?: number,
-    date: number
+    date: number,
+    type: string
 }
 
 console.log('hello')
