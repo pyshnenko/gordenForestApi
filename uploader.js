@@ -40,7 +40,7 @@ app.get("/pict*", function(request, response){
 
 app.use(upload.single("file"));
 app.post("/apiUpload", function (req, res, next) {
-   
+    console.log('im here')
     let filedata = req.body;
     if(!filedata)
         res.send({res: 'error'});
