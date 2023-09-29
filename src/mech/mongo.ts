@@ -19,6 +19,7 @@ const uri =`mongodb://${username}:${password}@${url}/?authMechanism=${authMechan
 export interface Event {
     pict: string[],
     text: string,
+    fulltext: string,
     id?: number, 
     name: string,
     gold: number,
