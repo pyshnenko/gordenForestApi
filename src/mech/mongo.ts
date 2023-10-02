@@ -63,10 +63,14 @@ class mongoFunc {
 
     async eventsAdd(login: string, event: Event) {
         let id: number = 0;
+        console.log('mongo');
         try {
             await mongoClient.connect();
+            console.log(login);
             let author: any[] = await collection.find({login}).toArray();
+            console.log(author);
             if (author.length && (author[0].role === 'Lord' || author[0].role === 'Secretary')) {
+                console.log('im here')
                 let all: any[] = await eventsCollection.find().toArray();
                 id = all.length === 0 ? 1 : all[all.length-1].id + 1;
                 await eventsCollection.insertOne({...event, id, nowGold: 0})
