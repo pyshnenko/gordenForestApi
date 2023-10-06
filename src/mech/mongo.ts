@@ -85,14 +85,11 @@ class mongoFunc {
         }
     }
 
-    async eventslist(login: string, id: number) {
+    async eventslist(id: number) {
         let all: any[] = [];
         try {
             await mongoClient.connect();
-            let author: any[] = await collection.find({login}).toArray();
-            if (author.length) {
-                all = id ? await eventsCollection.find({id}).toArray() : await eventsCollection.find().toArray();
-            }
+            all = id ? await eventsCollection.find({id}).toArray() : await eventsCollection.find().toArray();
         }
         catch (e) {
             all = [];

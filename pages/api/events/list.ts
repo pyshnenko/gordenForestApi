@@ -23,32 +23,19 @@ export default async function handler(req: any, res: any) {
         origin: '*',
         optionsSuccessStatus: 200,
     });
-    if (req.method==='POST'){
-        if (req.headers?.authorization!==undefined)
-            {
-                let verToken = await jwt.verify(req.headers.authorization.substr(7), String(process.env.SALT_CRYPT));
-                let time = new Date(Number((new Date()).setHours((new Date()).getHours() - 3)) - verToken.iat*1000);
-                logger.debug(verToken.login + '\n' + time)
-                let dat = await mongoS.find({login: verToken.login});
-                if (dat.length) {                    
-                    if (req.hasOwnProperty('body')&&(typeof(req.body)==='object')&&(Object.keys(req.body).length>=6)){
-                        let buf: {id: number};
-                        if (typeof(req.body)==='string') {
-                            buf = JSON.parse(req.body)
-                        }
-                        else buf = req.body;             
-                        let result = await mongoS.eventslist(dat[0].login, buf.id);
-                        res.status(200).json({res: result});
-                    }
-                    else {
-                        let result = await mongoS.eventslist(dat[0].login);
-                        res.status(200).json(result);
-                    }
-                }
-                else res.status(403).json({res: 'incorrectToken or body'});
+    if (req.method==='POST'){ 
+        if (req.hasOwnProperty('body')&&(typeof(req.body)==='object')&&(Object.keys(req.body).length>=6)){
+            let buf: {id: number};
+            if (typeof(req.body)==='string') {
+                buf = JSON.parse(req.body)
             }
+            else buf = req.body;             
+            let result = await mongoS.eventslist(buf.id);
+            res.status(200).json({res: result});
+        }
         else {
-            res.status(402).json({res: 'unAutorized'});
+            let result = await mongoS.eventslist();
+            res.status(200).json(result);
         }
     }
 }
