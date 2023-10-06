@@ -89,7 +89,7 @@ class mongoFunc {
         let all: any[] = [];
         try {
             await mongoClient.connect();
-            all = id ? await eventsCollection.find({id}).toArray() : await eventsCollection.find().toArray();
+            all = (id ? await eventsCollection.find({id}).toArray() : await eventsCollection.find().toArray());
         }
         catch (e) {
             all = [];
