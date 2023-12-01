@@ -31,7 +31,6 @@ export default async function handler(req: any, res: any) {
                 logger.debug('goldTreasury - total')
                 let dat = await mongoS.find({login: verToken.login});
                 if (dat.length) {
-                    console.log(req.body);
                     if ((dat[0].role==='Secretary')||(dat[0].role==='Lord')||(dat[0].role==='Treasurer')) {
                         if (req.hasOwnProperty('body')&&(typeof(req.body)==='object')&&(Object.keys(req.body).length>=1)){
 			                console.log(typeof(req.body));
