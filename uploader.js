@@ -50,11 +50,13 @@ app.post("/apiUpload", function (req, res, next) {
         let jjj = fs.readdirSync("pict", { withFileTypes: true });
         jjj=jjj.filter(d => d.isDirectory());
         jjj.map(d => ddir.push(d.name));
-        if (!ddir.includes(decodeURI(req.headers.folder))) fs.mkdir(`pict/${decodeURI(req.headers.folder)}`, err => {
+        let folderName = decodeURI(req.headers.folder);
+        if (folderName.length > 20) folderName.slice(0, 20)+=Number(date);
+        if (!ddir.includes(folderName)) fs.mkdir(`pict/${folderName}`, err => {
           if(err) throw err; // не удалось создать папку
             console.log('Папка успешно создана');
         });
-        let newName = `pict/${req.headers.folder ? decodeURI(req.headers.folder) : 'base'}/${decodeURI(req.headers.fname)}`;
+        let newName = `pict/${req.headers.folder ? folderName : 'base'}/${decodeURI(req.headers.fname)}`;
         fs.rename(`uploads/${name}`, `${newName}`, err => {
           if(err) throw err; // не удалось переместить файл
             console.log('Файл успешно перемещён');
