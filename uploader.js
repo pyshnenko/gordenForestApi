@@ -57,7 +57,7 @@ app.post("/apiUpload", function (req, res, next) {
           if(err) throw err; // не удалось создать папку
             console.log('Папка успешно создана');
         });
-        let newName = `pict/${req.headers.folder ? folderName : 'base'}/${decodeURI(req.headers.fname)}`;
+        let newName = `pict/${folderName ? folderName : 'base'}/${decodeURI(req.headers.fname)}`;
         fs.rename(`uploads/${name}`, `${newName}`, err => {
           if(err) throw err; // не удалось переместить файл
             console.log('Файл успешно перемещён');
