@@ -51,7 +51,7 @@ app.post("/apiUpload", function (req, res, next) {
         jjj=jjj.filter(d => d.isDirectory());
         jjj.map(d => ddir.push(d.name));
         let folderName = decodeURI(req.headers.folder);
-        if (folderName.length > 20) folderName.slice(0, 20)+=Number(date);
+        if (folderName.length > 20) {folderName.slice(0, 20); folderName+=Number(date);}
         if (!ddir.includes(folderName)) fs.mkdir(`pict/${folderName}`, err => {
           if(err) throw err; // не удалось создать папку
             console.log('Папка успешно создана');
