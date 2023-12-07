@@ -119,6 +119,28 @@ class mongoFunc {
         }
     }
 
+    async eventsIBe(login: string, id: number, del?: boolean) {
+        let res: boolean = false;
+        try {
+            await mongoClient.connect();
+            let author: any[] = await collection.find({login}).toArray();
+            if (author.length) {
+                let event: Event[] = await eventsCollection.find({id}).toArray();
+                if (!del) event[0].activeMembers.push(login);
+                else event[0].activeMembers.splice(event[0].activeMembers.indexOf(login), 1);
+                await eventsCollection.updateOne({id: id}, {$set: event[0]});
+                res = true;
+            }
+        }
+        catch (e) {
+            res = false;
+        }
+        finally {
+            await mongoClient.close();
+            return res
+        }
+    }
+
     async goldTotal(login: string, usLogin?: string, treasury?: boolean, addr?: number) {
         let goldData;
         try {
