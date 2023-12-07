@@ -37,7 +37,7 @@ export default async function handler(req: any, res: any) {
                             buf = JSON.parse(req.body)
                         }
                         else buf = req.body;           
-                        let result = await mongoS.ilBe(buf.login, buf.id, buf?.del);
+                        let result = await mongoS.eventsIBe(buf.login, buf.id, buf?.del);
                         res.status(200).json({res: result});
                     }
                     else res.status(403).json({res: 'incorrectToken or body'});
